@@ -1,0 +1,1476 @@
+GithubLink:https://github.com/BARANIDHARAN-S-Git/BlogTrackerApplication
+-------------------------BlogInfoController---------------------------
+using BlogTrackerApplication.Models;
+using DAL;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Http;
+using System.Web.Mvc;
+
+namespace BlogTrackerApplication.Controllers
+{
+    public class BlogInfoController : ApiController
+    {
+        Methods a1 = null;
+        public BlogInfoController()
+        {
+            a1 = new Methods();
+        }
+
+
+       
+        public List<BlogInfo> Get()
+        {
+            List<BlogInfo> l = new List<BlogInfo>();
+            var b = a1.ShowallBlogInfo();
+            foreach (var item in b)
+            {
+                l.Add(
+
+                    new BlogInfo()
+                    {
+                        BlogId = item.BlogId,
+                        Title = item.Title,
+                        Subject = item.Subject,
+                        DateOfCreation = item.DateOfCreation,
+                        BlogUrl = item.BlogUrl,
+                        EmpEmailId=item.EmpEmailId
+                    }
+                );
+            }
+            return l;
+
+
+        }
+
+
+        
+        public BlogInfo Get(int id)
+        {
+            BlogInfoModel b = new BlogInfoModel();
+            BlogInfo blog = a1.findBlogInfobyid(id);
+            b.BlogId = Convert.ToInt32(blog.BlogId);
+            b.Title = blog.Title.ToString();
+            b.Subject = blog.Subject.ToString();
+            b.DateOfCreation = Convert.ToDateTime(blog.DateOfCreation);
+            b.EmpEmailId = blog.EmpEmailId.ToString();
+
+            return blog;
+        }
+
+
+       
+        public void Post([FromBody] BlogInfoModel blog)
+        {
+            BlogInfo b = new BlogInfo();
+
+            b.BlogId = blog.BlogId;
+            b.Title = blog.Title;
+            b.Subject = blog.Subject;
+            b.DateOfCreation = blog.DateOfCreation;
+            b.BlogUrl = blog.BlogUrl;
+            b.EmpEmailId = blog.EmpEmailId;
+
+            a1.InsertBlogInfo(b);
+
+
+        }
+
+        
+        public void Put(int id, [FromBody] BlogInfoModel blog)
+        {
+            BlogInfo b = new BlogInfo();
+            b.BlogId = blog.BlogId;
+            b.Title = blog.Title;
+            b.Subject = blog.Subject;
+            b.DateOfCreation = blog.DateOfCreation;
+            b.EmpEmailId = blog.EmpEmailId;
+
+            a1.UpdateBlogInfo(id, b);
+        }
+
+       
+        public void Delete(int id)
+        {
+            a1.DeleteBlogInfo(id);
+        }
+    }
+}
+------------------------------------AdminInfoController-----------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Http;
+using BlogTrackerApplication.Models;
+using System.Web.Mvc;
+using DAL;
+
+namespace BlogTrackerApplication.Controllers
+{
+    public class AdminInfoController : ApiController
+    {
+        Methods a1 = null;
+        public AdminInfoController()
+        {
+            a1 = new Methods();
+        }
+
+
+       
+        public List<AdminInfo> Get()
+        {
+            List<AdminInfo> l = new List<AdminInfo>();
+            var b = a1.ShowallAdminInfo();
+            foreach (var item in b)
+            {
+                l.Add(
+
+                    new AdminInfo()
+                    {
+                        EmailId = item.EmailId,
+                        Password = item.Password
+                    }
+                );
+            }
+            return l;
+
+
+        }
+
+
+       
+    }
+}
+----------------------------------EmpInfoController----------------------
+using BlogTrackerApplication.Models;
+using DAL;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Http;
+using System.Web.Mvc;
+
+namespace BlogTrackerApplication.Controllers
+{
+    public class EmpInfoController : ApiController
+    {
+        Methods a = null;
+        public EmpInfoController()
+        {
+            a = new Methods();
+        }
+
+
+       
+        public List<EmpInfo> Get()
+        {
+            List<EmpInfo> l = new List<EmpInfo>();
+            var b = a.ShowallEmployeeInfo();
+            foreach (var item in b)
+            {
+                l.Add(
+
+                    new EmpInfo()
+                    {
+                        EmailId = item.EmailId,
+                        Name = item.Name,
+                        DateOfJoining = item.DateOfJoining,
+                        PassCode = item.PassCode,
+                       
+                    }
+                );
+            }
+            return l;
+
+
+        }
+
+       
+        public EmpInfo Get(string id)
+        {
+            EmpInfoModel e = new EmpInfoModel();
+            EmpInfo emp = a.findEmpInfobyid(id);
+            e.EmailId = emp.EmailId;
+            e.Name = emp.Name;
+            e.DateOfJoining = emp.DateOfJoining;
+            e.PassCode = emp.PassCode;
+            return emp;
+        }
+
+
+       
+        public void Post([FromBody] EmpInfoModel empd)
+        {
+            EmpInfo e = new EmpInfo();
+
+            e.EmailId = empd.EmailId;
+            e.Name = empd.Name;
+            e.DateOfJoining = empd.DateOfJoining;
+            e.PassCode = empd.PassCode;
+
+            a.InsertEmpInfo(e);
+
+
+        }
+
+   
+        public void Put(string id, [FromBody] EmpInfoModel emp)
+        {
+            EmpInfo e = new EmpInfo();
+
+            e.EmailId = emp.EmailId;
+            e.Name = emp.Name;
+            e.DateOfJoining = emp.DateOfJoining;
+            e.PassCode = emp.PassCode;
+
+            a.UpdateEmpInfo(id, e);
+        }
+
+        
+        public void Delete(string id)
+        {
+            a.DeleteEmpInfo(id);
+        }
+    }
+}
+---------------------------AdminInfoModel.cs--------------------------
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Web;
+
+namespace BlogTrackerApplication.Models
+{
+    public class AdminInfoModel
+    {
+        [Required()]
+        public string EmailId { get; set; }
+
+        [MaxLength(30, ErrorMessage = "Not allowed above 30 chars")]
+        [MinLength(3, ErrorMessage = "Not allowed below 3 chars")]
+        public string Password { get; set; }
+    }
+}
+--------------------------------------BlogInfoModel.cs-------------------
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Web;
+
+namespace BlogTrackerApplication.Models
+{
+    public class BlogInfoModel
+    {
+        [Required()]
+        public int BlogId { get; set; }
+
+        [MaxLength(30, ErrorMessage = "Not allowed above 30 chars")]
+        [MinLength(3, ErrorMessage = "Not allowed below 3 chars")]
+        public string Title { get; set; }
+
+        public string Subject { get; set; }
+
+        public DateTime DateOfCreation { get; set; }
+
+        public string BlogUrl { get; set; }
+
+        public string EmpEmailId { get; set; }
+
+
+    }
+}
+--------------------------EmpInfoModel.cs--------------------------
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Web;
+
+namespace BlogTrackerApplication.Models
+{
+    public class EmpInfoModel
+    {
+        [Required()]
+        public string EmailId { get; set; }
+
+        [MaxLength(30, ErrorMessage = "Not allowed above 30 chars")]
+        [MinLength(3, ErrorMessage = "Not allowed below 3 chars")]
+        public string Name { get; set; }
+
+        public DateTime DateOfJoining { get; set; }
+
+        public int PassCode { get; set; }
+
+
+    }
+}
+--------------------------------------BloginfoController.cs------------------------------
+using DAL;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Web;
+using System.Web.Mvc;
+using System.Net.Http.Formatting;
+using Blog.Models;
+
+
+namespace Blog.Controllers
+{
+    public class BloginfoController : Controller
+    {
+
+        MyContext a1=new MyContext();
+
+        
+        public ActionResult BlogInfo()
+        {
+            List<Bloginfo> l = new List<Bloginfo>();
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:44352/api/");
+                var responseTask = client.GetAsync("BlogInfo");
+                responseTask.Wait();
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readData = result.Content.ReadAsAsync<Bloginfo[]>();
+                    readData.Wait();
+                    var emp = readData.Result;
+                    foreach (var item in emp)
+                    {
+                        l.Add(new Bloginfo
+                        {
+                            BlogId = item.BlogId,
+                            Title = item.Title,
+                            Subject = item.Subject,
+                            DateOfCreation = item.DateOfCreation,
+                            BlogUrl = item.BlogUrl,
+                            EmpemailId = item.EmpemailId
+
+                        });
+                    }
+                }
+            }
+            return View(l);
+
+        }
+
+        public ActionResult Blogs()
+        {
+            List<Bloginfo> l = new List<Bloginfo>();
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:44352/api/");
+                var responseTask = client.GetAsync("BlogInfo");
+                responseTask.Wait();
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readData = result.Content.ReadAsAsync<Bloginfo[]>();
+                    readData.Wait();
+                    var emp = readData.Result;
+                    var ans = TempData["emailid"].ToString();
+                    foreach (var item in emp)
+                    {
+                        if (item.EmpemailId == ans)
+                        {
+                            l.Add(new Bloginfo
+                            {
+                                BlogId = item.BlogId,
+                                Title = item.Title,
+                                Subject = item.Subject,
+                                DateOfCreation = item.DateOfCreation,
+                                BlogUrl = item.BlogUrl,
+                                EmpemailId = item.EmpemailId
+
+                            }); }
+                    }
+                }
+            }
+            return View(l);
+
+        }
+
+        public ActionResult AddBlogInfo()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult AddBlogInfo(Bloginfo blog)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:44352/api/BlogInfo");
+                var b = new BlogInfo { BlogId = blog.BlogId, Title = blog.Title, Subject = blog.Subject, DateOfCreation = blog.DateOfCreation, BlogUrl = blog.BlogUrl, EmpEmailId = blog.EmpemailId };
+                var Post = client.PostAsJsonAsync<Bloginfo>(client.BaseAddress, blog);
+                Post.Wait();
+                var result = Post.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readtask = result.Content.ReadAsAsync<Bloginfo>();
+                    readtask.Wait();
+                    var dataInserted = readtask.Result;
+                }
+            }
+            return RedirectToAction("BlogInfo");
+        }
+
+        public ActionResult EmpLogin()
+        {
+            
+            return View();
+
+        }
+
+        [HttpPost]
+        public ActionResult EmpLogin(FormCollection collection)
+        {
+            List<Empinfo> l = new List<Empinfo>();
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:44352/api/");
+                var responseTask = client.GetAsync("EmpInfo");
+                responseTask.Wait();
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readData = result.Content.ReadAsAsync<Empinfo[]>();
+                    readData.Wait();
+                    var emp = readData.Result;
+                    foreach (var item in emp)
+                    {
+                        l.Add(new Empinfo { EmailId=item.EmailId,PassCode=item.PassCode });
+
+                    }
+                }
+            }
+            var ans = l.Find(s => s.EmailId == Request["EmailId"]);
+            if (ans != null)
+            {
+                if (ans.PassCode==Convert.ToInt32(Request["Passcode"]))
+                {
+                    TempData["emailid"] = ans.EmailId;
+                    return RedirectToAction("Blogs");
+                }
+                else
+                {
+                    ViewBag.msg = "IncorrectPassword";
+                }
+
+            }
+            else
+            {
+                ViewBag.msg = "EmailId Not Found";
+            }
+            return View();
+
+        }
+        public ActionResult LogOut()
+        {
+            return RedirectToAction("BlogInfo");
+        }
+
+
+       
+
+    }
+}
+----------------------------EmpInfoController.cs---------------------------
+using Blog.Models;
+using DAL;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Web;
+using System.Web.Mvc;
+using System.Web.Services.Description;
+
+namespace Blog.Controllers
+{
+    public class EmpInfoController : Controller
+    {
+        public ActionResult EmpInfo()
+        {
+            List<Empinfo> l = new List<Empinfo>();
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:44352/api/");
+                var responseTask = client.GetAsync("EmpInfo");
+                responseTask.Wait();
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readData = result.Content.ReadAsAsync<Empinfo[]>();
+                    readData.Wait();
+                    var emp = readData.Result;
+                    foreach (var item in emp)
+                    {
+                        l.Add(new Empinfo
+                        {
+                          EmailId = item.EmailId,
+                          Name = item.Name,
+                          DateOfJoining = item.DateOfJoining,
+                          PassCode = item.PassCode
+
+                        });
+                    }
+                }
+            }
+            return View(l);
+
+        }
+
+        public ActionResult AddEmpInfo()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult AddEmpInfo(Empinfo emp)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:44352/api/EmpInfo");
+                var b = new Empinfo { EmailId=emp.EmailId,Name=emp.Name,DateOfJoining=emp.DateOfJoining,PassCode=emp.PassCode };
+                var Post = client.PostAsJsonAsync<Empinfo>(client.BaseAddress, emp);
+                Post.Wait();
+                var result = Post.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readtask = result.Content.ReadAsAsync<Empinfo>();
+                    readtask.Wait();
+                    var dataInserted = readtask.Result;
+                }
+            }
+            return RedirectToAction("EmpInfo");
+        }
+
+        public ActionResult AdminLogin()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult AdminLogin(FormCollection collection)
+        {
+            List<Admininfo> l = new List<Admininfo>();
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:44352/api/");
+                var responseTask = client.GetAsync("AdminInfo");
+                responseTask.Wait();
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readData = result.Content.ReadAsAsync<Admininfo[]>();
+                    readData.Wait();
+                    var admin = readData.Result;
+                    foreach (var item in admin)
+                    {
+                        l.Add(new Admininfo { EmailId = item.EmailId,  Password= item.Password });
+
+                    }
+                }
+            }
+            var ans = l.Find(s => s.EmailId == Request["EmailId"]);
+            if (ans != null)
+            {
+                if (ans.Password ==Request["Password"])
+                {
+                    return RedirectToAction("EmpInfo");
+                }
+                else
+                {
+                    ViewBag.msg = "IncorrectPassword";
+                }
+
+            }
+            else
+            {
+                ViewBag.msg = "EmailId Not Found";
+            }
+            return View();
+        }
+       
+    }
+}
+----------------------------Admininfo.cs-------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace Blog.Models
+{
+    public class Admininfo
+    {
+        private string _emailid;
+
+        public string EmailId
+        {
+            get { return _emailid; }
+            set { _emailid = value; }
+        }
+
+        private string _password;
+
+        public string Password
+        {
+            get { return _password; }
+            set { _password = value; }
+        }
+       
+    }
+}
+----------------------------------------Bloginfo.cs-----------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace Blog.Models
+{
+    public class Bloginfo
+    {
+        private int _BlogId;
+
+        public int BlogId
+        {
+            get { return _BlogId; }
+            set { _BlogId = value; }
+        }
+
+        private string _title;
+
+        public string Title
+        {
+            get { return _title; }
+            set { _title = value; }
+        }
+
+        private string _subject;
+
+        public string Subject
+        {
+            get { return _subject; }
+            set { _subject = value; }
+        }
+
+        private DateTime _dateofcreation;
+
+        public DateTime DateOfCreation
+        {
+            get { return _dateofcreation; }
+            set
+            {
+                _dateofcreation = value;
+            }
+        }
+
+        private string _blogurl;
+
+        public string BlogUrl
+        {
+            get { return _blogurl; }
+            set
+            {
+                _blogurl = value;
+            }
+        }
+
+        private string _empemailid;
+
+        public string EmpemailId
+        {
+            get { return _empemailid; }
+            set
+            {
+                _empemailid = value;
+            }
+        }
+    }
+}
+------------------------------Empinfo.cs------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace Blog.Models
+{
+    public class Empinfo
+    {
+        private string _emailid;
+
+        public string  EmailId
+        {
+            get
+            {
+                return _emailid;
+            }
+            set
+            {
+                _emailid = value;
+            }
+        }
+        public string _Name;
+        public string Name
+        {
+            get
+            {
+                return _Name;
+            }
+            set
+            {
+                _Name = value;
+            }
+        }
+
+        private DateTime _dateofjoining;
+
+        public DateTime DateOfJoining
+        {
+            get
+            {
+                return _dateofjoining;
+            }
+            set
+            {
+                _dateofjoining = value;
+            }
+        }
+
+        private int _passcode;
+
+        public int PassCode
+        {
+            get
+            {
+                return _passcode;
+            }
+            set
+            {
+                _passcode=value;
+            }
+
+        }
+    }
+}
+------------------------------------AddBlogInfo.cshtml----------------------------
+@model Blog.Models.Bloginfo
+
+@{
+    ViewBag.Title = "AddBlogInfo";
+}
+
+<h2>AddBlogInfo</h2>
+
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Bloginfo</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.BlogId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.BlogId, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.BlogId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Subject, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Subject, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Subject, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DateOfCreation, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.DateOfCreation, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.DateOfCreation, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BlogUrl, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.BlogUrl, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.BlogUrl, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.EmpemailId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.EmpemailId, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.EmpemailId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+-----------------------BlogInfo.cshtml---------------------------------
+@model IEnumerable<Blog.Models.Bloginfo>
+
+@{
+    ViewBag.Title = "BlogInfo";
+}
+
+<h2 style="text-align:center">List Of Blogs</h2>
+<br/>
+<br/>
+
+
+@foreach (var item in Model) {
+    
+    <div class="container  col-md-6"  >
+        <div class="alert alert-info" role="alert" style="color:black">
+            <h5>
+                @Html.DisplayFor(modelItem => item.Title)-By<h5>
+                    @Html.DisplayFor(modelItem => item.EmpemailId)
+                </h5>
+            </h5>
+
+
+            <h5>
+                 Date:@Html.DisplayFor(modelItem => item.DateOfCreation)
+            </h5>
+            <h5>
+              Subject:@Html.DisplayFor(modelItem => item.Subject)
+
+            </h5>
+            <div style="background-color:blue;color:white" role="alert">
+                <h5>
+                    @Html.DisplayFor(modelItem => item.BlogUrl)
+                </h5>
+            </div>
+           
+        </div>
+        </div>
+      
+}
+
+---------------------------------Blogs.cshtml---------------------------
+@model IEnumerable<Blog.Models.Bloginfo>
+
+@{
+    ViewBag.Title = "Blogs";
+    Layout = "~/Views/Shared/_BlogsLayout.cshtml";
+}
+
+<h2>Blogs</h2>
+
+<p >
+    @Html.ActionLink("Add New", "AddBlogInfo")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.BlogId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Subject)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DateOfCreation)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.BlogUrl)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EmpemailId)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.BlogId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Title)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Subject)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DateOfCreation)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.BlogUrl)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EmpemailId)
+        </td>
+        <td >
+
+
+            @Html.ActionLink("Delete", "Delete", new { id = item.BlogId })
+            @Html.ActionLink("Edit", "Edit", new { id = item.BlogId }) 
+        </td>
+    </tr>
+}
+
+</table>
+-----------------------------EmpLogin.cshtml------------------------------
+
+@{
+    ViewBag.Title = "EmpLogin";
+}
+
+<h5>@ViewBag.msg</h5>
+
+<div class="center-block">
+    <h1>EmployeeLoginPage</h1>
+
+    <form method="post">
+        <div>
+            <label>Email:</label>
+            <br />
+            <input type="text" name="EmailId" required />
+            <span></span>
+
+
+        </div>
+        <div>
+            <label>Passcode:</label>
+            <br />
+            <input type="password" required name="Passcode" />
+            <span></span>
+
+        </div>
+        <br />
+
+        <input class="btn btn-danger" type="submit" value="Login" />
+
+    </form>
+
+</div>
+-------------------------AddEmpInfo.cshtml------------------------
+@model Blog.Models.Empinfo
+
+@{
+    ViewBag.Title = "AddEmpInfo";
+}
+
+<h2>AddEmpInfo</h2>
+
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Empinfo</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.EmailId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.EmailId, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.EmailId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DateOfJoining, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.DateOfJoining, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.DateOfJoining, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PassCode, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.PassCode, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.PassCode, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+---------------------------AdminLogin.cshtml------------------------
+@model IEnumerable<Blog.Models.Admininfo>
+
+@{
+    ViewBag.Title = "AdminLogin";
+}
+
+<h5>@ViewBag.msg</h5>
+
+
+
+<div class="center-block">
+    <h1>AdminLoginPage</h1>
+
+    <form method="post">
+        <div>
+            <label>Email:</label>
+            <br />
+            <input type="text" name="EmailId" required />
+            <span></span>
+
+
+        </div>
+        <div>
+            <label>Password:</label>
+            <br />
+            <input type="password" required name="Password" />
+            <span></span>
+
+        </div>
+        <br />
+
+        <input class="btn btn-danger" type="submit" value="Login" />
+
+    </form>
+
+</div>
+-------------------------EmpInfo.cshtml-----------------------
+@model IEnumerable<Blog.Models.Empinfo>
+
+@{
+    ViewBag.Title = "EmpInfo";
+    Layout = "~/Views/Shared/_EmployeeLayout.cshtml";
+}
+
+<h2>EmpInfo</h2>
+
+<p>
+    @Html.ActionLink("Add New", "AddEmpInfo")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.EmailId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DateOfJoining)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PassCode)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.EmailId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DateOfJoining)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PassCode)
+        </td>
+        <td>
+
+
+            @Html.ActionLink("Delete", "Delete", new { id = item.EmailId })
+            @Html.ActionLink("Edit", "Edit", new { id = item.EmailId })
+        </td>
+    </tr>
+}
+
+</table>
+------------------------------AdminInfo.cs---------------------------
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+
+namespace DAL
+{
+    public class AdminInfo
+    {
+        [Key]
+        public string EmailId { get; set; }
+
+        [MaxLength(30, ErrorMessage = "Not allowed above 30 chars")]
+        [MinLength(3, ErrorMessage = "Not allowed below 3 chars")]
+        public string Password { get; set; }
+    }
+    public class MyContext : DbContext
+    {
+        public MyContext() : base("MyContext")
+        {
+            Database.SetInitializer(new SeedMethod());
+        }
+
+        public virtual DbSet<AdminInfo> AdminInfoTable { get; set; }
+
+        public virtual DbSet<BlogInfo> BlogInfoTable { get; set; }
+
+        public virtual DbSet<EmpInfo> EmpInfoTable { get; set; }
+
+    }
+}
+-------------------------------BlogInfo.cs----------------------------
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DAL
+{
+    public  class BlogInfo
+    {
+        [Key]
+        public int BlogId { get; set; }
+
+        [MaxLength(30, ErrorMessage = "Not allowed above 30 chars")]
+        [MinLength(3, ErrorMessage = "Not allowed below 3 chars")]
+        public string Title { get; set; }
+
+        public string Subject { get; set; }
+
+        public DateTime DateOfCreation { get; set; }
+
+        public string BlogUrl { get; set; }
+
+        public string EmpEmailId { get; set; }
+    }
+}
+------------------------------------EmpInfo.cs------------------
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DAL
+{
+    public  class EmpInfo
+    {
+        [Key]
+        public string EmailId { get; set; }
+
+        [MaxLength(30, ErrorMessage = "Not allowed above 30 chars")]
+        [MinLength(3, ErrorMessage = "Not allowed below 3 chars")]
+        public string Name { get; set; }
+
+        public DateTime DateOfJoining { get; set; }
+
+        public int PassCode { get; set; }
+
+
+    }
+}
+-----------------------------Methods.cs---------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Remoting.Contexts;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DAL
+{
+    public  class Methods
+    {
+        MyContext Context = null;
+        public Methods()
+        {
+            Context = new MyContext();
+        }
+
+        public List<AdminInfo> ShowallAdminInfo()
+        {
+            return Context.AdminInfoTable.ToList();
+
+        }
+
+        public List<EmpInfo> ShowallEmployeeInfo()
+        {
+            return Context.EmpInfoTable.ToList();
+
+        }
+
+        public List<BlogInfo> ShowallBlogInfo()
+        {
+            return Context.BlogInfoTable.ToList();
+
+        }
+
+       
+        public void InsertEmpInfo(EmpInfo emp)
+        {
+
+
+            Context.EmpInfoTable.Add(emp);
+            Context.SaveChanges();
+
+        }
+
+        public void InsertBlogInfo(BlogInfo blog)
+        {
+
+
+            Context.BlogInfoTable.Add(blog);
+            Context.SaveChanges();
+
+        }
+       
+
+        public void UpdateEmpInfo(string id, EmpInfo emp)
+        {
+            var a = Context.EmpInfoTable.ToList().Find(b => b.EmailId == id);
+            Context.EmpInfoTable.Remove(a);
+            Context.EmpInfoTable.Add(emp);
+            Context.SaveChanges();
+
+        }
+
+        public void UpdateBlogInfo(int id, BlogInfo blog)
+        {
+            var a = Context.BlogInfoTable.ToList().Find(b => b.BlogId == id);
+            Context.BlogInfoTable.Remove(a);
+            Context.BlogInfoTable.Add(blog);
+            Context.SaveChanges();
+
+        }
+
+        
+
+        public void DeleteEmpInfo(string id)
+        {
+            var e = Context.EmpInfoTable.ToList().Find(d => d.EmailId == id);
+            Context.EmpInfoTable.Remove(e);
+            Context.SaveChanges();
+        }
+
+        public void DeleteBlogInfo(int id)
+        {
+            var e = Context.BlogInfoTable.ToList().Find(d => d.BlogId == id); ;
+            Context.BlogInfoTable.Remove(e);
+            Context.SaveChanges();
+        }
+
+       
+
+        public EmpInfo findEmpInfobyid(string id)
+        {
+
+            var u = Context.EmpInfoTable.ToList().Find(f => f.EmailId== id);
+            return u;
+        }
+
+        public BlogInfo findBlogInfobyid(int id)
+        {
+
+            var a = Context.BlogInfoTable.ToList().Find(f => f.BlogId == id);
+            return a;
+        }
+
+    }
+}
+--------------------------------SeedMethod.cs----------------------
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DAL
+{
+    public class SeedMethod:DropCreateDatabaseIfModelChanges<MyContext>
+    {
+        protected override void Seed(MyContext context)
+        {
+            List<AdminInfo> AdminInfolist = new List<AdminInfo>();
+            AdminInfolist.Add(
+                new AdminInfo()
+                {
+                  EmailId="admin@gmail.com",
+                  Password="admin123"
+                }
+                );
+            context.AdminInfoTable.AddRange(AdminInfolist);
+
+            List<BlogInfo> BlogInfolist = new List<BlogInfo>();
+            BlogInfolist.Add(
+                new BlogInfo()
+                {
+                    BlogId = 1,
+                    Title = "TodayNews",
+                    Subject = "Sports",
+                    DateOfCreation = new DateTime(2000, 09, 09),
+                    BlogUrl = "https://timesofindia.indiatimes.com/sports",
+                    EmpEmailId = "Buttler@gmail.com"
+
+
+                }
+
+                );
+            context.BlogInfoTable.AddRange(BlogInfolist);
+
+            List<EmpInfo> EmpInfolist = new List<EmpInfo>();
+            EmpInfolist.Add(
+                new EmpInfo()
+                {
+                    EmailId = "Buttler@gmail.com",
+                    Name = "Buttler",
+                    DateOfJoining = new DateTime(2000, 09, 09),
+                    PassCode = 123
+                }
+                );
+            context.EmpInfoTable.AddRange(EmpInfolist);
+            context.SaveChanges();
+            base.Seed(context);
+        }
+    }
+}
+---------------------------------Test.cs-------------------------
+using DAL;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using NUnit.Framework;
+
+namespace DALTest
+{
+    public class Test
+    {
+        AdminInfo a = null;
+        EmpInfo e = null;
+
+        public Test()
+        {
+            a = new AdminInfo();
+            e = new EmpInfo();
+        }
+
+        [TestCase]
+        public void EmailTest()
+        {
+            MyContext m=new MyContext();
+            var ans = m.AdminInfoTable.ToList();
+            Assert.AreEqual("admin@gmail.com", ans[0].EmailId);
+
+        }
+
+        [TestCase]
+        public void PasswordTest()
+        {
+            MyContext s = new MyContext();
+            var result = s.AdminInfoTable.ToList();
+            Assert.AreEqual("admin123",result[0].Password);
+        }
+
+        Validate v = new Validate();
+        [TestCase]
+        public void AdminTest()
+        {
+           v.AdminTest();
+        }
+    }
+}
+---------------------------Validate.cs------------------------
+using DAL;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DALTest
+{
+    public class Validate
+    {
+        MyContext context=new MyContext();
+        public bool AdminTest()
+        {
+            bool ans = false;
+            var result = context.AdminInfoTable.ToList();
+
+            if (result[0].EmailId=="admin@gmail.com" && result[0].Password=="admin123")
+            {
+                ans = true;
+            }
+            return ans;
+
+        }
+    }
+}
